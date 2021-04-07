@@ -13,6 +13,11 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+import { connect } from "react-redux";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
@@ -47,28 +52,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login(props) {
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+function Login(props) {
   const classes = useStyles();
 
-  const [patientData] = React.useState([
-    {
-      email: "patient1@gmail.com",
-      password: "patient123",
-    },
-    {
-      email: "patient2@gmail.com",
-      password: "patient123",
-    },
-  ]);
-
-  const [hospitalData] = React.useState([
-    {
-      email: "hospital@gmail.com",
-      password: "hospital123",
-    },
-  ]);
+  const { Reducer: data } = props;
 
   const [formData, setFormData] = React.useState({});
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const handleChange = (event) => {
     const target = event.target;
@@ -78,96 +81,118 @@ export default function Login(props) {
     setFormData({ ...formData, [name]: value });
   };
 
+  console.log(formData);
+
   const handleSubmit = () => {
-    if ((formData.type = "patient")) {
-      const data = patientData.filter(
+    if (formData.type === "patient") {
+      const newdata = data.patientData.filter(
         (data) =>
           formData.email === data.email && formData.password === data.password
       );
-      if (data.length > 0) props.history.push("/booking");
+
+      if (newdata.length > 0) {
+        sessionStorage.setItem("email", newdata[0].email);
+        props.history.push("/booking");
+      } else setOpen(true);
     }
-    if ((formData.type = "hospital")) {
-      const data = hospitalData.filter(
+    if (formData.type === "hospital") {
+      const newdata = data.hospitalData.filter(
         (data) =>
           formData.email === data.email && formData.password === data.password
       );
-      if (data.length > 0) props.history.push("/admin");
+
+      sessionStorage.setItem("email", newdata[0].email);
+      if (newdata.length > 0) {
+        sessionStorage.setItem("email", newdata[0].email);
+        props.history.push("/admin");
+      } else setOpen(true);
     }
   };
 
-  console.log("FormData", formData);
-
   return (
-    <Grid container component="main" className={classes.root}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              value={formData.password}
-              onChange={handleChange}
-              autoComplete="current-password"
-            />
-            <FormControl component="fieldset">
-              <RadioGroup
-                row
-                aria-label="type"
-                name="type"
-                value={formData.type}
+    <>
+      <Grid container component="main" className={classes.root}>
+        <CssBaseline />
+        <Grid item xs={false} sm={4} md={7} className={classes.image} />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <form className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                value={formData.email}
                 onChange={handleChange}
+                autoFocus
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+              />
+              <FormControl component="fieldset">
+                <RadioGroup
+                  row
+                  aria-label="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel
+                    value="patient"
+                    control={<Radio />}
+                    label="Patient Login"
+                  />
+                  <FormControlLabel
+                    value="hospital"
+                    control={<Radio />}
+                    label="Hospital Login"
+                  />
+                </RadioGroup>
+              </FormControl>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={handleSubmit}
               >
-                <FormControlLabel
-                  value="patient"
-                  control={<Radio />}
-                  label="Patient Login"
-                />
-                <FormControlLabel
-                  value="hospital"
-                  control={<Radio />}
-                  label="Hospital Login"
-                />
-              </RadioGroup>
-            </FormControl>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={handleSubmit}
-            >
-              Sign In
-            </Button>
-          </form>
-        </div>
+                Sign In
+              </Button>
+            </form>
+          </div>
+        </Grid>
       </Grid>
-    </Grid>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          Invalid Credentials!
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
+const mapStateToProps = (state) => ({
+  Reducer: state.Reducer,
+});
+const mapActionsToProps = {};
+
+export default connect(mapStateToProps, mapActionsToProps)(Login);

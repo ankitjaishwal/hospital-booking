@@ -8,6 +8,18 @@ import Grid from "@material-ui/core/Grid";
 import BookIcon from "@material-ui/icons/Book";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+import Header from "./Header";
+
+import { connect } from "react-redux";
+
+import { bookSlot } from "../redux/ActionCreator";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,9 +45,10 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
+    marginTop: 12,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -43,119 +56,172 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+function BookingPage(props) {
   const classes = useStyles();
-  const [value, setValue] = React.useState("patient");
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
+  const { Reducer: data, bookSlot } = props;
+
+  const [formData, setFormData] = React.useState({});
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
+  const handleChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = () => {
+    let newData = data.booked.concat(formData);
+    bookSlot(newData);
+    setOpen(true);
+    setFormData({});
+  };
+
+  //console.log("Booking Data", bookingData);
+  //console.log("Booking Arr", bookingArray);
+
   return (
-    <Grid container component="main" className={classes.root}>
-      <CssBaseline />
+    <>
+      <Header />
+      <Grid container component="main" className={classes.root}>
+        <CssBaseline />
 
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <BookIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Book Slot
-          </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="name"
-              label="Name"
-              name="name"
-              autoComplete="name"
-              autoFocus
-            />
-            <Grid container spacing={1}>
-              <Grid item xs>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="age"
-                  label="Age"
-                  type="number"
-                  id="age"
-                  autoComplete="age"
-                />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <BookIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Book Slot
+            </Typography>
+            <form className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                autoFocus
+              />
+              <Grid container spacing={1}>
+                <Grid item xs>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="age"
+                    label="Age"
+                    type="number"
+                    id="age"
+                    value={formData.age}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="mobile"
+                    label="Mobile"
+                    type="number"
+                    id="mobile"
+                    value={formData.mobile}
+                    onChange={handleChange}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="mobile"
-                  label="Mobile"
-                  type="number"
-                  id="mobile"
-                  autoComplete="mobile"
-                />
+              <TextField
+                multiline
+                rowsMax={3}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="address"
+                label="Address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                autoFocus
+              />
+              <Grid container spacing={2}>
+                <Grid item xs>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="date"
+                    type="date"
+                    id="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    autoComplete="date"
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="time"
+                    type="time"
+                    id="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                    autoComplete="time"
+                    inputProps={{
+                      step: 300,
+                    }}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-            <TextField
-              multiline
-              rowsMax={3}
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="address"
-              label="Address"
-              name="address"
-              autoComplete="address"
-              autoFocus
-            />
-            <Grid container spacing={2}>
-              <Grid item xs>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="date"
-                  type="date"
-                  id="date"
-                  autoComplete="date"
-                />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="time"
-                  type="time"
-                  id="time"
-                  autoComplete="time"
-                />
-              </Grid>
-            </Grid>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Book Now
-            </Button>
-          </form>
-        </div>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={handleSubmit}
+              >
+                Book Now
+              </Button>
+            </form>
+          </div>
+        </Grid>
+        <Grid item xs={false} sm={4} md={7} className={classes.image} />
       </Grid>
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-    </Grid>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          Booked Successfully!
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
+
+const mapStateToProps = (state) => ({
+  Reducer: state.Reducer,
+});
+const mapActionsToProps = { bookSlot };
+
+export default connect(mapStateToProps, mapActionsToProps)(BookingPage);
