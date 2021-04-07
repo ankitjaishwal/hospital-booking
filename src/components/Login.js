@@ -123,9 +123,13 @@ function Login(props) {
         <Grid item xs={false} sm={4} md={7} className={classes.image} />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
+            <Typography component="h1" variant="h4" color="primary">
+              Welcome to Endimentional Hospital
+            </Typography>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>
+
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>

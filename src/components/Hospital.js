@@ -41,12 +41,30 @@ function Hospital(props) {
           <Grid item xs>
             <Card className={classes.root} style={{ border: "1px solid blue" }}>
               <CardContent>
-                <Typography>Name :{book.name}</Typography>
-                <Typography>Age :{book.age}</Typography>
-                <Typography>Mobile :{book.mobile}</Typography>
-                <Typography>Address :{book.address}</Typography>
-                <Typography>Date :{book.date}</Typography>
-                <Typography>Time :{book.time}</Typography>
+                <Typography align="left">
+                  <b>Name : </b>
+                  {book.name}
+                </Typography>
+                <Typography align="left">
+                  <b>Age : </b>
+                  {book.age}
+                </Typography>
+                <Typography align="left">
+                  <b>Mobile :</b>
+                  {book.mobile}
+                </Typography>
+                <Typography align="left">
+                  <b>Address :</b>
+                  {book.address}
+                </Typography>
+                <Typography align="left">
+                  <b>Date :</b>
+                  {book.date}
+                </Typography>
+                <Typography align="left">
+                  <b>Time :</b>
+                  {book.time}
+                </Typography>
               </CardContent>
             </Card>
           </Grid>

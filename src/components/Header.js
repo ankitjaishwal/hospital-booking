@@ -7,10 +7,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
+import logo from "../assets/images/logo.jpg";
+
 const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
     display: "flex",
+    marginLeft: 10,
   },
 }));
 
@@ -26,15 +29,16 @@ function Header(props) {
   return (
     <AppBar position="static" position="fixed">
       <Toolbar>
+        <img src={logo} style={{ height: 40, weight: 40, borderRadius: 20 }} />
         <Typography variant="h6" className={classes.title}>
-          XYZ Hospital
+          Endimentional Hospital
         </Typography>
-        <Typography variant="body1">
+        <Typography variant="body1" style={{ marginRight: 30 }}>
           {sessionStorage.getItem("email")}
         </Typography>
         <Button color="inherit" onClick={handleLogout}>
           <ExitToAppIcon />
-          <Typography variant="h6">Logout</Typography>
+          <Typography variant="h7">Logout</Typography>
         </Button>
       </Toolbar>
     </AppBar>
