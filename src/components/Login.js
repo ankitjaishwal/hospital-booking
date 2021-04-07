@@ -61,7 +61,11 @@ function Login(props) {
 
   const { Reducer: data } = props;
 
-  const [formData, setFormData] = React.useState({});
+  const [formData, setFormData] = React.useState({
+    email: "",
+    password: "",
+    type: "",
+  });
 
   const [open, setOpen] = React.useState(false);
 
@@ -87,11 +91,14 @@ function Login(props) {
     if (formData.type === "patient") {
       const newdata = data.patientData.filter(
         (data) =>
-          formData.email === data.email && formData.password === data.password
+          formData.email === data.email &&
+          formData.password === data.password &&
+          formData.type === data.type
       );
 
       if (newdata.length > 0) {
         sessionStorage.setItem("email", newdata[0].email);
+        sessionStorage.setItem("type", newdata[0].type);
         props.history.push("/booking");
       } else setOpen(true);
     }
@@ -101,9 +108,9 @@ function Login(props) {
           formData.email === data.email && formData.password === data.password
       );
 
-      sessionStorage.setItem("email", newdata[0].email);
       if (newdata.length > 0) {
         sessionStorage.setItem("email", newdata[0].email);
+        sessionStorage.setItem("type", newdata[0].type);
         props.history.push("/admin");
       } else setOpen(true);
     }
@@ -175,6 +182,7 @@ function Login(props) {
                 color="primary"
                 className={classes.submit}
                 onClick={handleSubmit}
+                disabled={formData.email === "" || formData.password === ""}
               >
                 Sign In
               </Button>
@@ -182,7 +190,7 @@ function Login(props) {
           </div>
         </Grid>
       </Grid>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           Invalid Credentials!
         </Alert>

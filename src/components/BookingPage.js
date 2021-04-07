@@ -61,9 +61,26 @@ function BookingPage(props) {
 
   const { Reducer: data, bookSlot } = props;
 
-  const [formData, setFormData] = React.useState({});
+  const [formData, setFormData] = React.useState({
+    name: "",
+    age: "",
+    mobile: "",
+    address: "",
+    date: "",
+    time: "",
+  });
 
   const [open, setOpen] = React.useState(false);
+  const [openErr, setOpenErr] = React.useState(false);
+
+  const [timeslot] = React.useState([
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "13:00",
+    "13:30",
+  ]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -71,6 +88,7 @@ function BookingPage(props) {
     }
 
     setOpen(false);
+    setOpenErr(false);
   };
 
   const handleChange = (event) => {
@@ -82,14 +100,25 @@ function BookingPage(props) {
   };
 
   const handleSubmit = () => {
-    let newData = data.booked.concat(formData);
-    bookSlot(newData);
-    setOpen(true);
-    setFormData({});
+    var newData;
+    var isAvailable = timeslot.some((time) => time == formData.time);
+    var isExist = data.booked.some(
+      (d) => d.time == formData.time && d.date == formData.date
+    );
+    if (isAvailable && !isExist) {
+      newData = data.booked.concat(formData);
+      setFormData({
+        name: "",
+        age: "",
+        mobile: "",
+        address: "",
+        date: "",
+        time: "",
+      });
+      bookSlot(newData);
+      setOpen(true);
+    } else setOpenErr(true);
   };
-
-  //console.log("Booking Data", bookingData);
-  //console.log("Booking Arr", bookingArray);
 
   return (
     <>
@@ -202,6 +231,14 @@ function BookingPage(props) {
                 color="primary"
                 className={classes.submit}
                 onClick={handleSubmit}
+                disabled={
+                  formData.name === "" ||
+                  formData.age === "" ||
+                  formData.mobile === "" ||
+                  formData.address === "" ||
+                  formData.date === "" ||
+                  formData.time === ""
+                }
               >
                 Book Now
               </Button>
@@ -210,9 +247,14 @@ function BookingPage(props) {
         </Grid>
         <Grid item xs={false} sm={4} md={7} className={classes.image} />
       </Grid>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success">
           Booked Successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openErr} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          Slot not available!
         </Alert>
       </Snackbar>
     </>

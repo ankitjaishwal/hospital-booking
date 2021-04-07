@@ -5,16 +5,19 @@ const initState = {
     {
       email: "patient1@gmail.com",
       password: "patient123",
+      type: "patient",
     },
     {
       email: "patient2@gmail.com",
       password: "patient123",
+      type: "patient",
     },
   ],
   hospitalData: [
     {
       email: "hospital@gmail.com",
       password: "hospital123",
+      type: "hospital",
     },
   ],
   booked: [

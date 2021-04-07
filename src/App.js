@@ -10,7 +10,7 @@ import Login from "./components/Login";
 import BookingPage from "./components/BookingPage";
 import Hospital from "./components/Hospital";
 
-import LoginRoute from "./components/Routes";
+import { PatientRoute, HospitalRoute } from "./components/Routes";
 
 const theme = createMuiTheme();
 
@@ -22,8 +22,8 @@ function App() {
           <Router>
             <Switch>
               <Route exact path="/" component={Login} />
-              <LoginRoute exact path="/booking" component={BookingPage} />
-              <LoginRoute exact path="/admin" component={Hospital} />
+              <PatientRoute exact path="/booking" component={BookingPage} />
+              <HospitalRoute exact path="/admin" component={Hospital} />
             </Switch>
           </Router>
         </Provider>
